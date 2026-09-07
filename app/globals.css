@@ -1,0 +1,364 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Brand layer — shared by the marketing site and the app.
+   Changing the brand means editing this block and nothing below it.
+   Values are the placeholders from docs/DESIGN.md; swap in the derived
+   Overflow ramp when it is pulled.
+   --------------------------------------------------------------------------- */
+:root {
+  --brand-50: #f4f6fb;
+  --brand-100: #e4e9f5;
+  --brand-300: #a9b6dc;
+  --brand-500: #4f63b5;
+  --brand-700: #33417a;
+  --brand-900: #1b2246;
+
+  --neutral-0: #ffffff;
+  --neutral-50: #fafafa;
+  --neutral-100: #f2f2f3;
+  --neutral-200: #e6e6e8;
+  --neutral-400: #a1a1a8;
+  --neutral-600: #62626a;
+  --neutral-900: #18181b;
+
+  --danger: #b4342f;
+  --success: #1d7a52;
+  --warning: #9a6510;
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --border-width: 1px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+}
+
+/* ---------------------------------------------------------------------------
+   Semantic layer — components reference these, never the raw ramp.
+   --------------------------------------------------------------------------- */
+:root {
+  --surface: var(--neutral-0);
+  --surface-sunken: var(--neutral-50);
+  --surface-raised: var(--neutral-0);
+  --surface-hover: var(--neutral-100);
+
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-400);
+  --text-accent: var(--brand-700);
+
+  --border-subtle: var(--neutral-200);
+  --border-strong: var(--neutral-400);
+  --border: var(--border-subtle);
+  --focus-ring: var(--brand-500);
+
+  --accent: var(--brand-500);
+  --accent-hover: var(--brand-700);
+  --accent-fg: var(--neutral-0);
+}
+
+/* Dark mode overrides the semantic layer only. The ramp is never overridden. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #101013;
+    --surface-sunken: #0a0a0c;
+    --surface-raised: #17171b;
+    --surface-hover: #1f1f24;
+
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1a8;
+    --text-muted: #6c6c75;
+    --text-accent: var(--brand-300);
+
+    --border-subtle: #26262b;
+    --border-strong: #3d3d44;
+    --border: var(--border-subtle);
+
+    --accent: var(--brand-500);
+    --accent-hover: var(--brand-300);
+    --accent-fg: var(--neutral-0);
+  }
+}
+
+:root[data-theme="dark"] {
+  --surface: #101013;
+  --surface-sunken: #0a0a0c;
+  --surface-raised: #17171b;
+  --surface-hover: #1f1f24;
+
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1a8;
+  --text-muted: #6c6c75;
+  --text-accent: var(--brand-300);
+
+  --border-subtle: #26262b;
+  --border-strong: #3d3d44;
+  --border: var(--border-subtle);
+
+  --accent: var(--brand-500);
+  --accent-hover: var(--brand-300);
+  --accent-fg: var(--neutral-0);
+}
+
+/* ---------------------------------------------------------------------------
+   Density layer — forked. Set data-density once on a route group's layout root.
+   Nothing below this line references a raw px value.
+   --------------------------------------------------------------------------- */
+/*
+ * Density lives on a container so two route groups can differ. That leaves
+ * anything rendered outside those containers — a portal on document.body —
+ * with no value at all, which reads as a styling bug rather than a missing
+ * variable, because the colours are on :root and keep working.
+ *
+ * So :root carries the site scale as a floor. Nothing is ever unstyled; a
+ * portal that escapes its container degrades to the larger, safer scale rather
+ * than to a browser default. Portals should still be given their density
+ * container — see components/ui/popover.tsx — this is the safety net, not the
+ * mechanism.
+ */
+:root,
+[data-density="site"] {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 96px;
+
+  --text-xs: 14px;
+  --text-sm: 16px;
+  --text-base: 18px;
+  --text-lg: 28px;
+  --text-xl: 40px;
+  --text-2xl: 56px;
+
+  --line-body: 1.6;
+  --control-h: 44px;
+}
+
+[data-density="app"] {
+  --space-1: 3px;
+  --space-2: 6px;
+  --space-3: 10px;
+  --space-4: 14px;
+  --space-5: 18px;
+  --space-6: 26px;
+
+  --text-xs: 13px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 19px;
+  --text-xl: 23px;
+  --text-2xl: 28px;
+
+  --line-body: 1.5;
+  --control-h: 38px;
+  --row-h: 40px;
+}
+
+/*
+ * Between the two: the app's information density, loosened. A tenant that reads
+ * its CRM more than it scans it sets theme.density to "comfortable" and gets
+ * this without anything else changing.
+ */
+[data-density="comfortable"] {
+  --space-1: 5px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 20px;
+  --space-5: 28px;
+  --space-6: 40px;
+
+  --text-xs: 14px;
+  --text-sm: 15px;
+  --text-base: 17px;
+  --text-lg: 22px;
+  --text-xl: 27px;
+  --text-2xl: 34px;
+
+  --line-body: 1.55;
+  --control-h: 44px;
+  --row-h: 48px;
+}
+
+@layer base {
+  * {
+    border-color: var(--border-subtle);
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    line-height: var(--line-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus is always visible. A CRM is a keyboard product. */
+  :focus-visible {
+    outline: var(--focus-width, 2px) solid var(--focus-ring);
+    outline-offset: var(--focus-offset, 2px);
+  }
+
+  /* Scrollbars stay usable but quiet on dark surfaces. Chat surfaces hide
+     them entirely via .no-scrollbar — scrolling still works by wheel,
+     touch and keyboard. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Motion answers actions only — nothing animates on page load. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Set by lib/config/theme.ts. Declared here so anything outside the themed
+     container still resolves rather than rendering unstyled. */
+  :root {
+    --font-display: var(--font-sans);
+    --weight-display: 600;
+    --weight-body: 400;
+    --tracking: 0em;
+    --border-width: 1px;
+    --focus-width: 2px;
+    --focus-offset: 2px;
+    --accent-subtle: transparent;
+    --shadow-card: none;
+    --shadow-panel: none;
+    --shadow-overlay: none;
+  }
+
+  .skeleton {
+    background: var(--surface-hover);
+    border-radius: var(--radius-sm);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.35;
+      transform: scale(0.98);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  /* Orbiter for the Liquid melt pair: an elliptical float around the centred
+     piece, translate-only (the melt tracker does not mirror rotation). The
+     centre distance breathes between 46px (deep merge) and 84px (kiss), so
+     the pair melts together and apart. Gated on no-preference: without it
+     both pieces rest touching, still merged. */
+  @keyframes goo-orbit {
+    0% {
+      transform: translate(84px, 0);
+    }
+    25% {
+      transform: translate(0, 46px);
+    }
+    50% {
+      transform: translate(-84px, 0);
+    }
+    75% {
+      transform: translate(0, -46px);
+    }
+    100% {
+      transform: translate(84px, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .animate-goo-orbit {
+      animation: goo-orbit 4s linear infinite;
+    }
+
+    /* Hue drift mirroring the chatbox beam's own 12s ±30° hue-shift cycle,
+       so the melting pair breathes through the same colour phases. */
+    .animate-goo-hue {
+      animation: goo-hue 12s ease-in-out infinite;
+    }
+  }
+
+  @keyframes goo-hue {
+    0%,
+    100% {
+      filter: hue-rotate(-30deg);
+    }
+    50% {
+      filter: hue-rotate(30deg);
+    }
+  }
+
+  @keyframes shimmer-sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+
+  .animate-shimmer-sweep {
+    animation: shimmer-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  /* Frontend builder pages and Backend collections share one quiet transition
+     so switching tools preserves orientation without decorative motion. */
+  @keyframes studio-view-enter {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .studio-view-enter {
+    animation: studio-view-enter var(--dur, 180ms) var(--ease) both;
+  }
+}
